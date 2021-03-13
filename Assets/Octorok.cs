@@ -9,15 +9,21 @@ public class Octorok : MonoBehaviour
 {
 
 
+    public float WalkSpeed = 1;
     public float FireSeconds = 2.0f;
     public float FireSpeed = 10f;
 
 
+    private const float WALK_LERP_TIME = 2f;
     private const float NOSE_LERP_TIME = 0.25f;
     private const float LEG_LERP_TIME = 0.4f;
 
 
     private Transform _nose;
+
+    private Vector3 _originalPosition;
+    private Vector3 _destinationPosition;
+    private float _destinationTimeElapsed;
 
     private List<Transform> _leftLegs;
     private List<Transform> _rightLegs;
@@ -38,6 +44,8 @@ public class Octorok : MonoBehaviour
 
     void Start()
     {
+        ChangePositionDestination();
+
         _ignoreObjects = new List<GameObject>();
 
         _nose = this.transform.Find("Nose");
@@ -75,9 +83,84 @@ public class Octorok : MonoBehaviour
 
     void FixedUpdate()
     {
+        UpdatePosition();
         UpdateLegs();
         UpdateNose();
         Fire();
+    }
+
+
+    private void UpdatePosition()
+    {
+        _destinationTimeElapsed += Time.fixedDeltaTime;
+
+        if (_destinationTimeElapsed >= WALK_LERP_TIME)
+        {
+            ChangePositionDestination();
+        }
+    }
+
+
+    private void ChangePositionDestination()
+    {
+        int rand = Random.Range(1, 8);
+        switch (rand)
+        {
+            case 1:
+                this.transform.localEulerAngles = new Vector3(0, 0, 0);
+                break;
+            case 2:
+                this.transform.localEulerAngles = new Vector3(0, 90, 0);
+                break;
+            case 3:
+                this.transform.localEulerAngles = new Vector3(0, 180, 0);
+                break;
+            case 4:
+                this.transform.localEulerAngles = new Vector3(0, 270, 0);
+                break;
+        }
+
+        _originalPosition = this.transform.localPosition;
+        _destinationPosition = this.transform.localPosition + (this.transform.forward * WalkSpeed);
+
+        _destinationTimeElapsed = 0;
+
+        this.GetComponent<Rigidbody>().velocity = this.transform.forward * WalkSpeed;
+    }
+
+
+    private void ForceChangePositionDestination()
+    {
+        Vector3 newAngle;
+
+        do
+        {
+            int rand = Random.Range(1, 4);
+            switch (rand)
+            {
+                case 1:
+                    newAngle = new Vector3(0, 0, 0);
+                    break;
+                case 2:
+                    newAngle = new Vector3(0, 90, 0);
+                    break;
+                case 3:
+                    newAngle = new Vector3(0, 180, 0);
+                    break;
+                default:
+                    newAngle = new Vector3(0, 270, 0);
+                    break;
+            }
+        } while (this.transform.localEulerAngles == newAngle);
+
+        this.transform.localEulerAngles = newAngle;
+
+        _originalPosition = this.transform.localPosition;
+        _destinationPosition = this.transform.localPosition + (this.transform.forward * WalkSpeed);
+
+        _destinationTimeElapsed = 0;
+
+        this.GetComponent<Rigidbody>().velocity = this.transform.forward * WalkSpeed;
     }
 
 
@@ -160,6 +243,8 @@ public class Octorok : MonoBehaviour
         _projectile.transform.localPosition = Vector3.zero;
         _projectile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
         _projectile.GetComponent<Rigidbody>().velocity = this.transform.forward * FireSpeed;
+        _projectile.GetComponent<MeshRenderer>().enabled = true;
+        _projectile.GetComponent<SelfDestruct>().enabled = true;
 
         Damageor damageor = _projectile.GetComponent<Damageor>();
         damageor.IgnoreObjects = _ignoreObjects;
@@ -176,9 +261,22 @@ public class Octorok : MonoBehaviour
             return;
         }
 
-
         Destroy(damageor);
     }
 
+     
+    void OnCollisionEnter(Collision col) 
+    {
+        if (col.gameObject.name.StartsWith("Cube"))
+        {
+            ForceChangePositionDestination();
+            return;
+        }
+
+        if (!col.gameObject.name.StartsWith("Floor"))
+        {
+            UnityEngine.Debug.Log("Collide: " + col.gameObject.name);
+        }
+    }
 
 }
