@@ -12,6 +12,7 @@ public class Octorok : MonoBehaviour
     public float WalkSpeed = 1;
     public float FireSeconds = 2.0f;
     public float FireSpeed = 10f;
+    public float MaxHealth = 0.5f;
 
 
     private const float WALK_LERP_TIME = 2f;
@@ -78,6 +79,15 @@ public class Octorok : MonoBehaviour
         ChangeLegDirection();
 
         this.GetComponent<Damageor>().OnDamaging += OnDamaging;
+
+        HealthSystem healthSystem = this.GetComponent<HealthSystem>();
+        healthSystem.IgnoreDamagees.Add("Rock");
+        healthSystem.MaxHealth = MaxHealth;
+        healthSystem.Health = MaxHealth;
+        healthSystem.OnHealthChanged += OnHealthChanged;
+        healthSystem.OnDeath += OnDeath;
+
+        // UnityEngine.Debug.Log("health set to " + MaxHealth);
     }
 
 
@@ -278,5 +288,18 @@ public class Octorok : MonoBehaviour
             UnityEngine.Debug.Log("Collide: " + col.gameObject.name);
         }
     }
+
+
+    private void OnHealthChanged()
+    {
+        // UnityEngine.Debug.Log("Health at: " + this.GetComponent<HealthSystem>().Health.ToString());
+    }
+
+    private void OnDeath()
+    {
+        UnityEngine.Debug.Log("killed.");
+        Destroy(this.gameObject);
+    }
+
 
 }

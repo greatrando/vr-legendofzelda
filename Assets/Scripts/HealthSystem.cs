@@ -7,13 +7,15 @@ public class HealthSystem : MonoBehaviour
 {
 
 
-    public float MaxHealth { get; set; }
+    public GameObject ParentObject = null;
+    public List<string> IgnoreDamagees = new List<string>();
 
 
     public delegate void DeathEvent();
     public delegate void HealthChangedEvent();
 
 
+    public float MaxHealth { get; set; }
     public DeathEvent OnDeath = null;
     public HealthChangedEvent OnHealthChanged = null;
 
@@ -23,6 +25,11 @@ public class HealthSystem : MonoBehaviour
 
     public void Start()
     {
+        if (ParentObject == null)
+        {
+            ParentObject = this.gameObject;
+        }
+
         Health = MaxHealth;
 
         Damageee takeDamage = this.GetComponent<Damageee>();
@@ -38,10 +45,31 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(GameObject gameObject)
     {
-        Damageor damageor = gameObject.GetComponent<Damageor>();
-        if (damageor != null)
+        if (!IgnoreDamagees.Contains(gameObject.name))
         {
-            Health -= damageor.DamageAmount;
+            Damageor damageor = gameObject.GetComponent<Damageor>();
+            if (damageor != null)
+            {
+                Health -= damageor.DamageAmount;
+                KnockBack(damageor);
+            }
+        }
+    }
+
+
+    private void KnockBack(Damageor damageor)
+    {
+        Vector3 _knockBack = (this.transform.position - damageor.transform.position).normalized;
+        _knockBack.y = 0;
+        if (ParentObject.GetComponent<CharacterController>() != null)
+        {
+            _knockBack *= 100f;
+            ParentObject.GetComponent<CharacterController>().SimpleMove(_knockBack);
+        }
+        else
+        {
+            _knockBack *= 1;
+            ParentObject.transform.position += _knockBack;
         }
     }
 

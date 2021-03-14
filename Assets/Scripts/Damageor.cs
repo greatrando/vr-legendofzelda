@@ -35,6 +35,12 @@ public class Damageor : MonoBehaviour
 
     private void OnDamageCollision(CollisionHelper sender, GameObject gameObject)
     {
+        // if (this.gameObject.name == "Handle")
+        // {
+        //     DebugHUD.FindDebugHud().PresentToast("Collide with: " + gameObject.name);
+        // }
+
+
         Damageee takeDamage = gameObject.GetComponent<Damageee>();
         if (takeDamage != null)
         {

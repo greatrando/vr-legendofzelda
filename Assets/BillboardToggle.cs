@@ -8,32 +8,41 @@ public class BillboardToggle : MonoBehaviour
 
 
     private GameObject _text;
+    private bool _isInitialized = false;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        _text = this.transform.Find("Text").gameObject;
-        _text.SetActive(false);
     }
 
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (!_isInitialized)
+        {
+            _text = this.transform.Find("Text").gameObject;
+            _text.SetActive(false);
+            _text.GetComponent<MeshRenderer>().enabled = false;
+            _isInitialized = true;            
+        }        
     }
 
      
     void OnTriggerEnter(Collider col) 
     {
+        if (_text == null) return;
+
         _text.SetActive(true);
+        _text.GetComponent<MeshRenderer>().enabled = true;
     }
 
 
     void OnTriggerExit(Collider col) 
     {
+        if (_text == null) return;
+        
         _text.SetActive(false);
+        _text.GetComponent<MeshRenderer>().enabled = false;
     }
 
 
