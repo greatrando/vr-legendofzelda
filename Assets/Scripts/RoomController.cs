@@ -60,6 +60,7 @@ public class RoomController : MonoBehaviour
             }
 
             clone = Instantiate(go, go.transform.position, go.transform.rotation);
+            clone.name = go.name;
             clone.transform.SetParent(this.transform);
             clone.transform.localScale = go.transform.localScale;
             clone.SetActive(true);

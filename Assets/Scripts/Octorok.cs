@@ -34,7 +34,7 @@ public class Octorok : MonoBehaviour
     private float _legTimeElapsed;
 
     private GameObject _rock;
-    private GameObject _projectile;
+    // private GameObject _projectile;
     private float _nextFire;
 
     private Vector3 _originalNosePosition;
@@ -269,7 +269,9 @@ public class Octorok : MonoBehaviour
             return;
         }
 
+        GameObject _projectile;
         _projectile = Instantiate(_rock, Vector3.zero, transform.rotation);
+        _projectile.name = _rock.name;
         _projectile.transform.SetParent(this.transform);
         _projectile.transform.localPosition = Vector3.zero;
         _projectile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
@@ -298,15 +300,11 @@ public class Octorok : MonoBehaviour
      
     void OnCollisionEnter(Collision col) 
     {
-        if (col.gameObject.name.StartsWith("Cube"))
+        Tags tags = col.gameObject.GetComponent<Tags>();
+        if (tags != null && tags.HasTag("environment"))
         {
             ForceChangePositionDestination();
             return;
-        }
-
-        if (!col.gameObject.name.StartsWith("Floor"))
-        {
-            UnityEngine.Debug.Log("Collide: " + col.gameObject.name);
         }
     }
 
@@ -315,6 +313,7 @@ public class Octorok : MonoBehaviour
     {
         // UnityEngine.Debug.Log("Health at: " + this.GetComponent<HealthSystem>().Health.ToString());
     }
+
 
     private void OnDeath()
     {

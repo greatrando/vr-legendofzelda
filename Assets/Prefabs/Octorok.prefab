@@ -1528,7 +1528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Material: {fileID: 0}
-  WalkSpeed: 1
+  WalkSpeed: 4
   FireSeconds: 2
   FireSpeed: 20
   MaxHealth: 0.5
