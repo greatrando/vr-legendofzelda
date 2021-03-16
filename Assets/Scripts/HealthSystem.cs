@@ -63,7 +63,7 @@ public class HealthSystem : MonoBehaviour
         _knockBack.y = 0;
         if (ParentObject.GetComponent<CharacterController>() != null)
         {
-            _knockBack *= 100f;
+            _knockBack *= 100f * 2;
             ParentObject.GetComponent<CharacterController>().SimpleMove(_knockBack);
         }
         else

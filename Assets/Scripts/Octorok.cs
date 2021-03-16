@@ -9,6 +9,7 @@ public class Octorok : MonoBehaviour
 {
 
 
+    public Material Material;
     public float WalkSpeed = 1;
     public float FireSeconds = 2.0f;
     public float FireSpeed = 10f;
@@ -57,6 +58,7 @@ public class Octorok : MonoBehaviour
 
         _ignoreObjects.Add(this.gameObject);
         _ignoreObjects.Add(_nose.gameObject);
+        _ignoreObjects.Add(_nose.GetChild(0).gameObject);
         _ignoreObjects.Add(_rock.gameObject);
         _ignoreObjects.Add(this.transform.Find("Right Eye").gameObject);
         _ignoreObjects.Add(this.transform.Find("Left Eye").gameObject);
@@ -75,13 +77,32 @@ public class Octorok : MonoBehaviour
             _rightLegs.Add(gameObject.transform);
         }
 
+        if (Material != null)
+        {
+            this.GetComponent<MeshRenderer>().material = Material;
+            _nose.GetComponent<MeshRenderer>().material = Material;
+            _nose.GetChild(0).GetComponent<MeshRenderer>().material = Material;
+            foreach (Transform leg in _leftLegs)
+            {
+                leg.GetComponent<MeshRenderer>().material = Material;
+            }
+            foreach (Transform leg in _rightLegs)
+            {
+                leg.GetComponent<MeshRenderer>().material = Material;
+            }
+        }
+
         _destinationLegRotation = new Vector3(43, 30f, 0);
         ChangeLegDirection();
 
         this.GetComponent<Damageor>().OnDamaging += OnDamaging;
 
         HealthSystem healthSystem = this.GetComponent<HealthSystem>();
-        healthSystem.IgnoreDamagees.Add("Rock");
+        if (healthSystem == null)
+        {
+            healthSystem = this.gameObject.AddComponent<HealthSystem>();
+        }
+        healthSystem.IgnoreDamagees.AddRange(new string[] { "Rock", "Octorok", "Nose" });
         healthSystem.MaxHealth = MaxHealth;
         healthSystem.Health = MaxHealth;
         healthSystem.OnHealthChanged += OnHealthChanged;
@@ -297,6 +318,7 @@ public class Octorok : MonoBehaviour
 
     private void OnDeath()
     {
+        this.GetComponent<GoodieDropper>().Drop();
         UnityEngine.Debug.Log("killed.");
         Destroy(this.gameObject);
     }

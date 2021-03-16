@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
 
 
     public HealthSystem HealthSystem;
+    public GameObject HeartsContainer;
+    public Texture HeartFullTexture;
+    public Texture HeartHalfTexture;
+    public Texture HeartNoneTexture;
+
+
+    private List<RawImage> _hearts;
 
 
     void Start()
@@ -16,6 +23,12 @@ public class Player : MonoBehaviour
         if (HealthSystem == null)
         {
             HealthSystem = this.gameObject.AddComponent<HealthSystem>();
+        }
+
+        _hearts = new List<RawImage>();
+        for (int idx = 0; idx < HeartsContainer.transform.childCount; idx++)
+        {
+            _hearts.Add(HeartsContainer.GetAllChildren()[idx].GetComponent<RawImage>());
         }
 
         HealthSystem.MaxHealth = 3; // 3 hearts
@@ -28,6 +41,9 @@ public class Player : MonoBehaviour
     private void OnHealthChanged()
     {
         UnityEngine.Debug.Log("Health Changed: " + HealthSystem.Health.ToString());
+        _hearts[0].texture = HealthSystem.Health > 0.5 ? HeartFullTexture : HealthSystem.Health < 0.5 ? HeartNoneTexture : HeartHalfTexture;
+        _hearts[1].texture = HealthSystem.Health > 1.5 ? HeartFullTexture : HealthSystem.Health < 1.5 ? HeartNoneTexture : HeartHalfTexture;
+        _hearts[2].texture = HealthSystem.Health > 2.5 ? HeartFullTexture : HealthSystem.Health < 2.5 ? HeartNoneTexture : HeartHalfTexture;
     }
 
 
