@@ -117,9 +117,20 @@ public class Octorok : MonoBehaviour
         UpdatePosition();
         UpdateLegs();
         UpdateNose();
+        FixRotation();
         Fire();
     }
 
+
+    private void FixRotation()
+    {
+        const float DEGREE_LOCK = 90;
+
+        Vector3 vv = Vector3.zero;
+        vv.y = Mathf.Round(this.transform.eulerAngles.y / DEGREE_LOCK) * DEGREE_LOCK;
+        this.transform.eulerAngles = vv;        
+    }
+    
 
     private void UpdatePosition()
     {
@@ -272,8 +283,9 @@ public class Octorok : MonoBehaviour
         GameObject _projectile;
         _projectile = Instantiate(_rock, Vector3.zero, transform.rotation);
         _projectile.name = _rock.name;
-        _projectile.transform.SetParent(this.transform);
-        _projectile.transform.localPosition = Vector3.zero;
+        // _projectile.transform.SetParent(this.transform); //don't do this, it will rotate with the octorok
+        // _projectile.transform.localPosition = Vector3.zero;
+        _projectile.transform.position = this.transform.position;
         _projectile.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
         _projectile.GetComponent<Rigidbody>().velocity = this.transform.forward * FireSpeed;
         _projectile.GetComponent<MeshRenderer>().enabled = true;
@@ -289,7 +301,7 @@ public class Octorok : MonoBehaviour
 
     private void OnDamaging(GameObject damageor, GameObject damagee)
     {
-        if (damageor == this.gameObject)
+        if (this.gameObject == null || damageor == this.gameObject)
         {
             return;
         }

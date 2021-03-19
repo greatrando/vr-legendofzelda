@@ -31,7 +31,7 @@ public class RoomController : MonoBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.name != PLAYER_GAMEOBJECT_NAME)
+        if (collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
         {
             return;
         }
@@ -80,8 +80,9 @@ public class RoomController : MonoBehaviour
 
     public void OnTriggerExit(Collider collider)
     {
-        if (collider.gameObject.name != PLAYER_GAMEOBJECT_NAME)
+        if (collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
         {
+            CheckForChildrenReflect(collider.gameObject);
             return;
         }
 
@@ -92,6 +93,23 @@ public class RoomController : MonoBehaviour
             Destroy(go);
         }
         _activated.Clear();
+    }
+
+
+    private void CheckForChildrenReflect(GameObject gameObject)
+    {
+        Tags tags = gameObject.GetComponent<Tags>();
+        if (tags == null) return;
+
+        if (!this.gameObject.IsChild(gameObject)) return;
+
+        //flip it
+        Vector3 currentRotation = gameObject.transform.eulerAngles;
+        currentRotation.y += 180;
+        gameObject.transform.eulerAngles = currentRotation; 
+        
+        //and reverse it
+        gameObject.GetComponent<Rigidbody>().velocity *= -1;
     }
 
 

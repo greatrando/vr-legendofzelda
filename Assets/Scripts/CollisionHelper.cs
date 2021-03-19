@@ -32,7 +32,7 @@ public class CollisionHelper : MonoBehaviour
      
     void OnCollisionEnter(Collision col) 
     {
-        if (IgnoreObjects.Contains(col.gameObject)) return;
+        if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
         CurrentCollisions.Add(col.gameObject);
         OnEnter?.Invoke(this, col.gameObject);
@@ -41,7 +41,7 @@ public class CollisionHelper : MonoBehaviour
 
     void OnCollisionExit(Collision col) 
     {
-        if (IgnoreObjects.Contains(col.gameObject)) return;
+        if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
         CurrentCollisions.Remove(col.gameObject);
         OnExit?.Invoke(this, col.gameObject);
@@ -50,7 +50,7 @@ public class CollisionHelper : MonoBehaviour
      
     void OnTriggerEnter(Collider col) 
     {
-        if (IgnoreObjects.Contains(col.gameObject)) return;
+        if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
         CurrentCollisions.Add(col.gameObject);
         OnEnter?.Invoke(this, col.gameObject);
@@ -59,7 +59,7 @@ public class CollisionHelper : MonoBehaviour
 
     void OnTriggerExit(Collider col) 
     {
-        if (IgnoreObjects.Contains(col.gameObject)) return;
+        if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
         CurrentCollisions.Remove(col.gameObject);
         OnExit?.Invoke(this, col.gameObject);

@@ -7,6 +7,9 @@ public class Player : MonoBehaviour
 {
 
 
+    private static Player _player = null;
+
+
     public HealthSystem HealthSystem;
     public GameObject HeartsContainer;
     public Texture HeartFullTexture;
@@ -15,10 +18,13 @@ public class Player : MonoBehaviour
 
 
     private List<RawImage> _hearts;
+    private Wallet _wallet;
 
 
     void Start()
     {
+        _player = this;
+
         HealthSystem = this.GetComponent<HealthSystem>();
         if (HealthSystem == null)
         {
@@ -35,6 +41,9 @@ public class Player : MonoBehaviour
         HealthSystem.OnHealthChanged += OnHealthChanged;
         HealthSystem.OnDeath += OnDeath;
         HealthSystem.Health = HealthSystem.MaxHealth;
+
+        _wallet = this.GetComponent<Wallet>();
+        _wallet.OnChanged += OnWalletChanged;
     }
 
 
@@ -59,5 +68,16 @@ public class Player : MonoBehaviour
         #endif
     }
 
+
+    private void OnWalletChanged()
+    {
+        UnityEngine.Debug.Log("Wallet changed to: " + _wallet.CurrentValue);
+    }
+
+
+    public static Player GetInstance()
+    {
+        return _player;
+    }
 
 }

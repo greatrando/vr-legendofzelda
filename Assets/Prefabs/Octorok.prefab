@@ -1603,8 +1603,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Goodies:
   - {fileID: 9072238134672791713, guid: c81af163e40deee47a93d1bf42a61f4f, type: 3}
+  - {fileID: 8443249559025711896, guid: 262b7577edc39d64f92afcf86ccf8d10, type: 3}
   - {fileID: 7883724367524218925, guid: 82a6216f1212cc74b93692867a0334b1, type: 3}
-  PercentChances: 2100000021000000
+  PercentChances: 190000001900000019000000
+  TotalDroppings: 1
 --- !u!1 &1770316653662527720
 GameObject:
   m_ObjectHideFlags: 0

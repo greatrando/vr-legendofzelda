@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7883724367524218924}
   - component: {fileID: 7883724367524218927}
+  - component: {fileID: 5794160278352311625}
+  - component: {fileID: 4598999513532177410}
   m_Layer: 0
   m_Name: Heart
   m_TagString: Untagged
@@ -49,6 +51,31 @@ MonoBehaviour:
   BottomHeight: 1.3
   height: 0.25
   speed: 4
+--- !u!65 &5794160278352311625
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883724367524218925}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.4833542, y: 0.35094783, z: 3.6333008}
+  m_Center: {x: 0.0020581589, y: -0.033513483, z: -0.03540039}
+--- !u!114 &4598999513532177410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883724367524218925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f2af2ec9cc12a43a85d8163afbadf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7883724366952708098
 PrefabInstance:
   m_ObjectHideFlags: 0

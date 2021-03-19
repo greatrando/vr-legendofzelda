@@ -21,19 +21,19 @@ public class CollectableMotion : MonoBehaviour
 
     void FixedUpdate()
     {
-        DoRotate();
-        DoBob();
-        DoExpire();
+        Rotate();
+        Bob();
+        Expire();
     }
 
 
-    private void DoRotate()
+    private void Rotate()
     {
         transform.Rotate(new Vector3(0, 1, 0) * Time.deltaTime * RotationSpeed);
     }
 
 
-    private void DoBob()
+    private void Bob()
     {
         Vector3 pos = transform.position;
         float newY = Mathf.Sin(Time.time * speed);
@@ -41,7 +41,7 @@ public class CollectableMotion : MonoBehaviour
     }
 
 
-    private void DoExpire()
+    private void Expire()
     {
         _currentLifeTime += Time.fixedDeltaTime;
         if (_currentLifeTime >= LifeTimeSeconds)
@@ -49,5 +49,6 @@ public class CollectableMotion : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
 
 }

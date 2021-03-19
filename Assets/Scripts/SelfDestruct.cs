@@ -24,7 +24,7 @@ public class SelfDestruct : MonoBehaviour
 
         if (_countDown <= 0)
         {
-            UnityEngine.Debug.Log("self destruct");
+            // UnityEngine.Debug.Log("self destruct");
             Destroy(this.gameObject);
         }    
     }

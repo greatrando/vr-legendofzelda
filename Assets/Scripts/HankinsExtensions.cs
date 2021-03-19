@@ -21,4 +21,30 @@ public static class ClassExtension
     }
 
 
+    public static bool IsChildOf(this GameObject thisGameObject, string name)
+    {
+        if (thisGameObject.name == name) return true;
+
+        if (thisGameObject.transform.parent == null) return false;
+
+        return thisGameObject.transform.parent.gameObject.IsChildOf(name);
+    }
+
+
+    public static bool IsChild(this GameObject thisGameObject, GameObject gameObject)
+    {
+        List<GameObject> children = thisGameObject.GetAllChildren();
+
+        foreach (GameObject go in children)
+        {
+            if (go == gameObject)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }

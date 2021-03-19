@@ -10062,7 +10062,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.102000006, y: 0.7608638}
   m_AnchorMax: {x: 0.102000006, y: 0.7608638}
-  m_AnchoredPosition: {x: 400, y: -449}
+  m_AnchoredPosition: {x: 284, y: -341}
   m_SizeDelta: {x: 83, y: 94}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &898111767
@@ -11010,7 +11010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 2
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1832, y: 1920}
@@ -11032,7 +11032,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 104370572}
-  m_PlaneDistance: 1
+  m_PlaneDistance: 2
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0

@@ -91,8 +91,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8551421074198020635}
   - component: {fileID: 8153337584117740432}
+  - component: {fileID: 7167975888652984677}
+  - component: {fileID: 4261759202557649172}
   m_Layer: 0
-  m_Name: Rupie
+  m_Name: RupieBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,3 +132,29 @@ MonoBehaviour:
   BottomHeight: 1.3
   height: 0.25
   speed: 4
+--- !u!65 &7167975888652984677
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9072238134672791713}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 91.90919, y: 186.03174, z: 37.197266}
+  m_Center: {x: 0.39235651, y: 2.6535332, z: 8.598633}
+--- !u!114 &4261759202557649172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9072238134672791713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f587149de5d2d4ba15b3951ed30fa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: 5

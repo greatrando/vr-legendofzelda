@@ -37,7 +37,8 @@ public class Damageor : MonoBehaviour
     {
         // if (this.gameObject.name == "Handle")
         // {
-        //     DebugHUD.FindDebugHud().PresentToast("Collide with: " + gameObject.name);
+            // DebugHUD.FindDebugHud().PresentToast("Collide with: " + gameObject.name);
+            // UnityEngine.Debug.Log("Collide with: " + gameObject.name);
         // }
 
 
@@ -45,8 +46,11 @@ public class Damageor : MonoBehaviour
         if (takeDamage != null)
         {
             takeDamage.OnApplyDamage?.Invoke(sender.gameObject);
+
         }
 
+        if (sender.gameObject == null) return;
+        
         OnDamaging?.Invoke(sender.gameObject, gameObject);
     }
 
