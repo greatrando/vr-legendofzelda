@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
 
     private List<RawImage> _hearts;
     private Wallet _wallet;
+    private Text _rupieValue;
 
 
     void Start()
@@ -34,7 +35,14 @@ public class Player : MonoBehaviour
         _hearts = new List<RawImage>();
         for (int idx = 0; idx < HeartsContainer.transform.childCount; idx++)
         {
-            _hearts.Add(HeartsContainer.GetAllChildren()[idx].GetComponent<RawImage>());
+            if (HeartsContainer.GetAllChildren()[idx].HasComponent<Text>())
+            {
+                _rupieValue = HeartsContainer.GetAllChildren()[idx].GetComponent<Text>();
+            }
+            else
+            {
+                _hearts.Add(HeartsContainer.GetAllChildren()[idx].GetComponent<RawImage>());
+            }
         }
 
         HealthSystem.MaxHealth = 3; // 3 hearts
@@ -71,7 +79,7 @@ public class Player : MonoBehaviour
 
     private void OnWalletChanged()
     {
-        UnityEngine.Debug.Log("Wallet changed to: " + _wallet.CurrentValue);
+        _rupieValue.text = _wallet.CurrentValue.ToString();
     }
 
 

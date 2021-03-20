@@ -3,7 +3,7 @@
 Copyright (c) Facebook Technologies, LLC and its affiliates. All rights reserved.  
 
 See SampleFramework license.txt for license terms.  Unless required by applicable law 
-or agreed to in writing, the sample code is provided “AS IS” WITHOUT WARRANTIES OR 
+or agreed to in writing, the sample code is provided ï¿½AS ISï¿½ WITHOUT WARRANTIES OR 
 CONDITIONS OF ANY KIND, either express or implied.  See the license for specific 
 language governing permissions and limitations under the license.
 
@@ -73,7 +73,7 @@ namespace OVRTouchSample
             m_showAfterInputFocusAcquired = new List<Renderer>();
 
             // Collision starts disabled. We'll enable it for certain cases such as making a fist.
-            m_colliders = this.GetComponentsInChildren<Collider>().Where(childCollider => !childCollider.isTrigger).ToArray();
+            m_colliders = this.GetComponentsInChildren<Collider>().Where(childCollider => !childCollider.isTrigger && !childCollider.gameObject.HasComponent<Tags>()).ToArray();
             CollisionEnable(false);
 
             // Get animator layer indices by name, for later use switching between hand visuals

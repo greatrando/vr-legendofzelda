@@ -52,7 +52,7 @@ public class HUDPositioning : MonoBehaviour
             _originalPostion = rect.localPosition;
         }
 
-        rect.localPosition = new Vector3(-10, -130 , 0);
+        rect.localPosition = new Vector3(-10, -100 , 0);
     }
 
 

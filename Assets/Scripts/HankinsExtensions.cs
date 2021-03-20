@@ -8,6 +8,12 @@ public static class ClassExtension
 {
 
 
+    public static bool HasComponent<T>(this GameObject gameObject)
+    {
+        return (gameObject.GetComponent<T>() != null);
+    }
+
+
     public static List<GameObject> GetAllChildren(this GameObject gameObject)
     {
         List<GameObject> results = new List<GameObject>();

@@ -308,7 +308,7 @@ public class DebugHUD : MonoBehaviour
             b = 0f;
         }
 
-        Color currentColor = new Color(255, 255, 255, 0);// Color.clear;
+        Color currentColor = new Color(0, 0, 255, 0);// Color.clear;
         float counter = 0f;
 
         while (counter < duration)

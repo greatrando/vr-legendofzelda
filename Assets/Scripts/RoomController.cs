@@ -31,10 +31,14 @@ public class RoomController : MonoBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
+        if (_inRoom || !collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
         {
             return;
         }
+
+        if (collider.gameObject.name.StartsWith("GrabVolume")) return; //not sure why this is firing horribly when in VR
+
+        // DebugHUD.FindDebugHud().PresentToast("in room " + collider.gameObject.name);
 
         _inRoom = true;
 
@@ -80,11 +84,17 @@ public class RoomController : MonoBehaviour
 
     public void OnTriggerExit(Collider collider)
     {
-        if (collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
+        if (!_inRoom) return;
+
+        if (collider.gameObject.name.StartsWith("GrabVolume")) return; //not sure why this is firing horribly when in VR
+
+        if (!collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME))
         {
             CheckForChildrenReflect(collider.gameObject);
             return;
         }
+
+        // DebugHUD.FindDebugHud().PresentToast("out of room " + collider.gameObject.name);
 
         _inRoom = false;
 

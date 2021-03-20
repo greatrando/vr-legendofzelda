@@ -32,11 +32,18 @@ public class HealthSystem : MonoBehaviour
 
         Health = MaxHealth;
 
-        Damageee takeDamage = this.GetComponent<Damageee>();
+        AttachDamagee(this.gameObject);
+        AttachDamagee(ParentObject);
+    }
+
+
+    private void AttachDamagee(GameObject gameObject)
+    {
+        Damageee takeDamage = gameObject.GetComponent<Damageee>();
 
         if (takeDamage == null)
         {
-            takeDamage = this.gameObject.AddComponent<Damageee>();
+            takeDamage = gameObject.AddComponent<Damageee>();
         }
 
         takeDamage.OnApplyDamage += TakeDamage;

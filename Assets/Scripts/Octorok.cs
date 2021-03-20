@@ -301,7 +301,7 @@ public class Octorok : MonoBehaviour
 
     private void OnDamaging(GameObject damageor, GameObject damagee)
     {
-        if (this.gameObject == null || damageor == this.gameObject)
+        if (this.gameObject == null || damageor == null || damageor == this.gameObject)
         {
             return;
         }

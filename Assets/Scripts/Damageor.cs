@@ -35,9 +35,12 @@ public class Damageor : MonoBehaviour
 
     private void OnDamageCollision(CollisionHelper sender, GameObject gameObject)
     {
+        // if (sender.name == "Rock" && gameObject.name != "Rock" && !gameObject.name.StartsWith("Rock") && !gameObject.name.StartsWith("Cube"))
+        // {
+        //     DebugHUD.FindDebugHud().PresentToast("Damage from " + sender.gameObject.name + " to " + gameObject.name);
+        // }
         // if (this.gameObject.name == "Handle")
         // {
-            // DebugHUD.FindDebugHud().PresentToast("Collide with: " + gameObject.name);
             // UnityEngine.Debug.Log("Collide with: " + gameObject.name);
         // }
 
@@ -46,7 +49,6 @@ public class Damageor : MonoBehaviour
         if (takeDamage != null)
         {
             takeDamage.OnApplyDamage?.Invoke(sender.gameObject);
-
         }
 
         if (sender.gameObject == null) return;
