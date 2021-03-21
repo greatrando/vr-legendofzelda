@@ -24,7 +24,7 @@ public class tempFindTransform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _debug = DebugHUD.FindDebugHud();
+        _debug = DebugHUD.GetInstance();
 
         _debug.AddTextElement(new DebugHUD.HUDTextElement(){ 
             id = "X", 
@@ -156,11 +156,11 @@ public class tempFindTransform : MonoBehaviour
         _transform.position = Vector3.Lerp(_originalPosition, _destinationPosition, _timeElapsed / LERP_TIME);
         _transform.eulerAngles = Vector3.Lerp(_originalRotation, _destinationRotation,  _timeElapsed / LERP_TIME);
 
-        DebugHUD.FindDebugHud().UpdateTextElement("X", "X: " + _zeroPosition.x + " :: " + _transform.position.x.ToString());
-        DebugHUD.FindDebugHud().UpdateTextElement("Y", "Y: " + _zeroPosition.y + " :: " + _transform.position.y.ToString());
-        DebugHUD.FindDebugHud().UpdateTextElement("Z", "Z: " + _zeroPosition.z + " :: " + _transform.position.z.ToString());
-        DebugHUD.FindDebugHud().UpdateTextElement("ROTATION", "R: " + _transform.rotation.x.ToString());
-        DebugHUD.FindDebugHud().UpdateTextElement("T", "T: " + _timeElapsed.ToString());
+        DebugHUD.GetInstance().UpdateTextElement("X", "X: " + _zeroPosition.x + " :: " + _transform.position.x.ToString());
+        DebugHUD.GetInstance().UpdateTextElement("Y", "Y: " + _zeroPosition.y + " :: " + _transform.position.y.ToString());
+        DebugHUD.GetInstance().UpdateTextElement("Z", "Z: " + _zeroPosition.z + " :: " + _transform.position.z.ToString());
+        DebugHUD.GetInstance().UpdateTextElement("ROTATION", "R: " + _transform.rotation.x.ToString());
+        DebugHUD.GetInstance().UpdateTextElement("T", "T: " + _timeElapsed.ToString());
 
         if (_timeElapsed >= LERP_TIME)
         {

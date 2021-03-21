@@ -28,7 +28,7 @@ public class HUDPositioning : MonoBehaviour
         _isOculus = isHardwarePresent();
         if (!_isOculus)
         {
-            Transform childTransform = GameObject.Find("OVRPlayerController").GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == "testsword");
+            Transform childTransform = GameObject.Find("XR Rig").GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == "testsword");
             childTransform.gameObject.SetActive(true);
         }
 

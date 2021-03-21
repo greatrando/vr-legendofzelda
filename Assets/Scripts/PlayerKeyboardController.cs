@@ -8,7 +8,7 @@ public class PlayerKeyboardController : MonoBehaviour
 
     public GameObject MainCamera;
     public GameObject GroundCollider;
-    public CharacterController controller;
+    // public CharacterController controller;
 
     public float Speed = 12f;
     public float MouseSensitivity = 100f;
@@ -29,7 +29,7 @@ public class PlayerKeyboardController : MonoBehaviour
     void Start()
     {
         if (!ENABLED) return;
-
+isGrounded = true;
         _capsule = this.transform.FindChildRecursive("Capsule").gameObject;
     }
 
@@ -62,7 +62,22 @@ public class PlayerKeyboardController : MonoBehaviour
 
         velocity.y += (Gravity * Time.deltaTime);
 
-        controller.Move(velocity * Time.deltaTime);
+        this.transform.position += (velocity * Time.deltaTime);
+        // controller.Move(velocity * Time.deltaTime);
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+        UnityEngine.Debug.Log("Grounded.");
+    }
+
+
+    private void OnCollisionExit(Collision collision)
+    {
+        isGrounded = false;
+        UnityEngine.Debug.Log("NOT grounded.");
     }
 
 
@@ -73,7 +88,8 @@ public class PlayerKeyboardController : MonoBehaviour
 
         Vector3 move = (transform.right * x + transform.forward * z) * Speed * Time.deltaTime;
 
-        controller.Move(move);
+        this.transform.position += move;
+        // controller.Move(move);
     }
 
 

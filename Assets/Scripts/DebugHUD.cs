@@ -8,6 +8,9 @@ using UnityEngine.UI;
 public class DebugHUD : MonoBehaviour
 {
 
+    // private const string CAMERA_NAME = "CenterEyeAnchor";
+    private const string CAMERA_NAME = "Main Camera";
+
 
     public struct HUDTextElement
     {
@@ -54,11 +57,11 @@ public class DebugHUD : MonoBehaviour
     private static DebugHUD _debugHUD = null;
 
 
-    public static DebugHUD FindDebugHud()
+    public static DebugHUD GetInstance()
     {
         if (_debugHUD == null)
         {
-            GameObject gameObject = GameObject.Find("CenterEyeAnchor");
+            GameObject gameObject = GameObject.Find(CAMERA_NAME);
             while (gameObject.GetComponent<DebugHUD>() == null)
             {
                 if (gameObject.transform.parent == null)
@@ -77,7 +80,7 @@ public class DebugHUD : MonoBehaviour
 
     void Start()
     {
-        _camera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+        _camera = GameObject.Find(CAMERA_NAME).GetComponent<Camera>();
         // UnityEngine.Debug.Log(_camera);
         // UnityEngine.Debug.Log(_camera.transform);
 
