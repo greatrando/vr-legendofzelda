@@ -22,7 +22,7 @@ public class HandTracking : MonoBehaviour
     }
 
 
-    public delegate void HandStateChangedEvent();
+    public delegate void HandStateChangedEvent(HandTracking sender);
 
 
     public HandStateChangedEvent OnHandStateChanged = null;
@@ -203,7 +203,7 @@ public class HandTracking : MonoBehaviour
         if (_handState != newState)
         {
             _handState = newState;
-            OnHandStateChanged?.Invoke();
+            OnHandStateChanged?.Invoke(this);
         }
     }
 

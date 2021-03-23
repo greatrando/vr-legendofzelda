@@ -14,21 +14,20 @@ public class Equipment : MonoBehaviour
 
 
     private List<Equippable> _equipables = new List<Equippable>();
-    private List<EquipmentMount> _mounts = new List<EquipmentMount>();
     private List<Equippable> _bag = new List<Equippable>();
 
     
 
     public void Start()
     {
-        foreach (EquipmentMount mount in EquippedMountables)
-        {
-            _mounts.Add(mount);
-        }
-        foreach (EquipmentMount mount in StowedMountables)
-        {
-            _mounts.Add(mount);
-        }
+        // foreach (EquipmentMount mount in EquippedMountables)
+        // {
+        //     _mounts.Add(mount);
+        // }
+        // foreach (EquipmentMount mount in StowedMountables)
+        // {
+        //     _mounts.Add(mount);
+        // }
     }
 
 
@@ -41,28 +40,29 @@ public class Equipment : MonoBehaviour
 
     public void Acquire(GameObject acquirer, Equippable equippable)
     {
+        RemoveFromEquipment(equippable);
+
         if (!_equipables.Contains(equippable))
         {
             _equipables.Add(equippable);
         }
 
         // try to equip to acquirer
-        foreach (EquipmentMount mount in _mounts.ToList())
+        for (int idx = 0; idx < EquippedMountables.Count; idx++)
         {
-            if (mount.gameObject == acquirer)
+            if (EquippedMountables[idx].gameObject == acquirer)
             {
-                DebugHUD.GetInstance().PresentToast("add to acquirer");
-                Equip(equippable, mount);
+                Equip(equippable, EquippedMountables[idx]);
                 return;
             }
         }
 
         // try to find open mount
-        foreach (EquipmentMount mount in _mounts.ToList())
+        for (int idx = 0; idx < StowedMountables.Count; idx++)
         {
-            if (mount.Equippable == null)
+            if (StowedMountables[idx].Equippable == null)
             {
-                Equip(equippable, mount);
+                Equip(equippable, StowedMountables[idx]);
                 return;
             }
         }
@@ -91,7 +91,7 @@ public class Equipment : MonoBehaviour
     {
         if (equippable == null) return;
 
-        foreach (EquipmentMount mount in _mounts.ToList())
+        foreach (EquipmentMount mount in EquippedMountables)
         {
             if (mount.Equippable == null)
             {
@@ -138,7 +138,6 @@ public class Equipment : MonoBehaviour
         {
             if (em.Equippable == null)
             {
-                DebugHUD.GetInstance().PresentToast("move to empty mount");
                 MoveToStowedMount(equippable, em);
                 return;
             }
@@ -147,28 +146,69 @@ public class Equipment : MonoBehaviour
         // no more room in bag
         if (_bag.Count >= MaxBagCount)
         {
-            DebugHUD.GetInstance().PresentToast("can't bag, drop");
             PerformDrop(equippable);
             return;
         }
 
-        DebugHUD.GetInstance().PresentToast("add to bag");
         MoveToBag(equippable);
+    }
+
+
+    private void RemoveFromEquipment(Equippable equippable)
+    {
+        // remove from any mounts
+        for (int idx = 0; idx < EquippedMountables.Count; idx++)
+        {
+            if (EquippedMountables[idx].Equippable == equippable)
+            {
+                EquippedMountables[idx].Equippable = null;
+            }
+        }
+        // remove from any mounts
+        for (int idx = 0; idx < StowedMountables.Count; idx++)
+        {
+            if (StowedMountables[idx].Equippable == equippable)
+            {
+                StowedMountables[idx].Equippable = null;
+            }
+        }
+
+        // remove from bag
+        if (_bag.Contains(equippable))
+        {
+            _bag.Remove(equippable);
+        }
+    }
+
+
+    private void MoveToEquippedMount(Equippable equippable, EquipmentMount mount)
+    {
+        if (equippable.gameObject.HasComponent<Rigidbody>())
+        {
+            equippable.GetComponent<Rigidbody>().isKinematic = true;
+        }
+        mount.Equippable = equippable;
+        equippable.transform.SetParent(mount.transform);        
+        equippable.transform.localPosition = equippable.EquippedLocation + mount.MountLocation;
+        equippable.transform.localEulerAngles = equippable.EquippedRotation + mount.MountRotation;
+        equippable.transform.localScale = equippable.EquippedScale + mount.MountScale;
+        equippable.gameObject.SetActive(equippable.EquippedVisible);
+        equippable.Equipped(mount);
     }
 
 
     private void MoveToStowedMount(Equippable equippable, EquipmentMount mount)
     {
-        mount.Equippable = equippable;
-        equippable.transform.SetParent(mount.transform);
-        equippable.transform.localEulerAngles = equippable.StowedLocation + mount.MountLocation;
-        equippable.transform.localPosition = equippable.StowedRotation + mount.MountRotation;
-        equippable.transform.localScale = equippable.StowedScale + mount.MountScale;
-        equippable.gameObject.SetActive(equippable.StowedVisible);
         if (equippable.gameObject.HasComponent<Rigidbody>())
         {
             equippable.GetComponent<Rigidbody>().isKinematic = true;
         }
+        mount.Equippable = equippable;
+        equippable.transform.SetParent(mount.transform);
+        equippable.transform.localPosition = equippable.StowedLocation + mount.MountLocation;
+        equippable.transform.localEulerAngles = equippable.StowedRotation + mount.MountRotation;
+        equippable.transform.localScale = equippable.StowedScale + mount.MountScale;
+        equippable.gameObject.SetActive(equippable.StowedVisible);
         equippable.UnEquipped();
     }
 
@@ -185,39 +225,9 @@ public class Equipment : MonoBehaviour
     }
 
 
-    private void MoveToEquippedMount(Equippable equippable, EquipmentMount mount)
-    {
-        mount.Equippable = equippable;
-        equippable.transform.SetParent(mount.transform);        
-        equippable.transform.localPosition = equippable.EquippedLocation + mount.MountLocation;
-        equippable.transform.localEulerAngles = equippable.EquippedRotation + mount.MountRotation;
-        equippable.transform.localScale = equippable.EquippedScale + mount.MountScale;
-        equippable.gameObject.SetActive(equippable.EquippedVisible);
-        if (equippable.gameObject.HasComponent<Rigidbody>())
-        {
-            equippable.GetComponent<Rigidbody>().isKinematic = true;
-        }
-        equippable.Equipped(mount);
-    }
-
-
     private void PerformDrop(Equippable equippable)
     {
-        // remove from any mounts
-        foreach (EquipmentMount mount in _mounts.ToList())
-        {
-            if (mount.Equippable == equippable)
-            {
-                mount.Equippable = null;
-                break;
-            }
-        }
-
-        // remove from bag
-        if (_bag.Contains(equippable))
-        {
-            _bag.Remove(equippable);
-        }
+        RemoveFromEquipment(equippable);
 
         // finish drop
         _equipables.Remove(equippable);

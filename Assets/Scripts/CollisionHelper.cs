@@ -6,7 +6,7 @@ public class CollisionHelper : MonoBehaviour
 {
 
 
-    public delegate void CollisionEnterEvent(CollisionHelper sender, GameObject gameObject);
+    public delegate void CollisionEnterEvent(CollisionHelper sender, GameObject gameObject, Vector3 point);
     public delegate void CollisionExitEvent(CollisionHelper sender, GameObject gameObject);
 
 
@@ -35,7 +35,7 @@ public class CollisionHelper : MonoBehaviour
         if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
         CurrentCollisions.Add(col.gameObject);
-        OnEnter?.Invoke(this, col.gameObject);
+        OnEnter?.Invoke(this, col.gameObject, col.contacts[0].point);
     }
 
 
@@ -52,8 +52,10 @@ public class CollisionHelper : MonoBehaviour
     {
         if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
 
+        Vector3 localVector = col.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        var localClosestPoint = transform.InverseTransformPoint(localVector);
         CurrentCollisions.Add(col.gameObject);
-        OnEnter?.Invoke(this, col.gameObject);
+        OnEnter?.Invoke(this, col.gameObject, localClosestPoint);
     }
 
 

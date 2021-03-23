@@ -8,7 +8,7 @@ public class RoomController : MonoBehaviour
 {
 
 
-    private const string PLAYER_GAMEOBJECT_NAME = "OVRPlayerController";
+    private const string PLAYER_GAMEOBJECT_NAME = "XR Rig";
 
 
     public GameObject Activating;

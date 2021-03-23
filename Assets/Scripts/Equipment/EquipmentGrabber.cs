@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Equippable;
-
+using static HandTracking;
 
 [RequireComponent(typeof(EquipmentMount))]
+[RequireComponent(typeof(HandTracking))]
 public class EquipmentGrabber : MonoBehaviour
 {
 
@@ -16,26 +17,42 @@ public class EquipmentGrabber : MonoBehaviour
     public Equipment Equipment = null;
 
 
-    // OVRInput.Controller.LTouch or OVRInput.Controller.RTouch.
-    [SerializeField]
-    protected OVRInput.Controller m_controller;
-
-
 	private bool _ableToGrab = true;
-    private float _lastTrigger = 0;
+    private EquipmentMount mount;
+    private HAND_STATE _state = HAND_STATE.OPEN;
+    private bool isHandClosed = false;
     private List<Equippable> _touchingEquipables = new List<Equippable>();
     
 
     public void Start()
     {
-		// We're going to setup the player collision to ignore the hand collision.
-		SetPlayerIgnoreCollision(gameObject, true);
+        this.GetComponent<HandTracking>().OnHandStateChanged += OnHandStateChanged;
+        mount = this.GetComponent<EquipmentMount>();
     }
 
 
-    public void Update()
+    private void OnHandStateChanged(HandTracking sender)
     {
-        CheckForGrabOrRelease();
+        HAND_STATE newState = sender.State;
+
+        if (newState != _state)
+        {
+            bool oldHandClosed = isHandClosed;
+
+            _state = newState;
+            isHandClosed = sender.IsHandClosed;
+
+            if (isHandClosed && !oldHandClosed && mount.Equippable == null)
+            {
+                GrabVolumeEnabled = false;
+                CheckForEquippable();
+            }
+            else if (!isHandClosed)
+            {
+                Equipment.Unequip(this.GetComponent<EquipmentMount>());
+                GrabVolumeEnabled = true;
+            }
+        }
     }
 
 
@@ -63,43 +80,6 @@ public class EquipmentGrabber : MonoBehaviour
     }
 
 
-	protected void SetPlayerIgnoreCollision(GameObject grabbable, bool ignore)
-	{
-		// if (m_player != null)
-		// {
-		// 	Collider[] playerColliders = m_player.GetComponentsInChildren<Collider>();
-		// 	foreach (Collider pc in playerColliders)
-		// 	{
-		// 		Collider[] colliders = grabbable.GetComponentsInChildren<Collider>();
-		// 		foreach (Collider c in colliders)
-		// 		{
-        //             if(!c.isTrigger && !pc.isTrigger)
-		// 			    Physics.IgnoreCollision(c, pc, ignore);
-		// 		}
-		// 	}
-		// }
-	}
-
-
-    protected void CheckForGrabOrRelease()
-    {
-        float currentTrigger = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, m_controller);
-
-        if ((currentTrigger >= TRIGGER_THRESHOLD_GRABBING) && (_lastTrigger < TRIGGER_THRESHOLD_GRABBING))
-        {
-            GrabVolumeEnable = false;
-            CheckForEquippable();
-        }
-        else if ((currentTrigger <= TRIGGER_THRESHOLD_RELEASE) && (_lastTrigger > TRIGGER_THRESHOLD_RELEASE))
-        {
-            Equipment.Unequip(this.GetComponent<EquipmentMount>());
-            GrabVolumeEnable = true;
-        }
-        
-        _lastTrigger = currentTrigger;
-    }
-
-
     private void CheckForEquippable()
     {
         try
@@ -116,10 +96,10 @@ public class EquipmentGrabber : MonoBehaviour
                     continue;
                 }
 
-                if (equippable.EquippedBy != null)
-                {
-                    DebugHUD.GetInstance().PresentToast("already equipped by: " + equippable.EquippedBy.name);
-                }
+                // if (equippable.EquippedBy != null)
+                // {
+                //     DebugHUD.GetInstance().PresentToast("already equipped by: " + equippable.EquippedBy.name);
+                // }
 
                 Vector3 directionToTarget = equippable.transform.position - this.transform.position;
                 float distanceSquared = directionToTarget.sqrMagnitude;
@@ -134,10 +114,6 @@ public class EquipmentGrabber : MonoBehaviour
             {
                 Equipment.Acquire(this.gameObject, closestGrabbableEquippable);
             }
-            else
-            {
-                DebugHUD.GetInstance().PresentToast("nothing to equip");            
-            }
         }
         catch (System.Exception ex)
         {
@@ -147,7 +123,7 @@ public class EquipmentGrabber : MonoBehaviour
     }
 
 
-    private bool GrabVolumeEnable
+    private bool GrabVolumeEnabled
     {
         get
         {

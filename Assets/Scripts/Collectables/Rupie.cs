@@ -11,7 +11,7 @@ public class Rupie : MonoBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.IsChildOf("OVRPlayerController"))
+        if (collider.gameObject.IsChildOf("XR Rig"))
         {
             Player.GetInstance().GetComponent<Wallet>().CurrentValue += Value;
             Destroy(this.gameObject);

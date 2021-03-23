@@ -33,7 +33,7 @@ public class Damageor : MonoBehaviour
     }
 
 
-    private void OnDamageCollision(CollisionHelper sender, GameObject gameObject)
+    private void OnDamageCollision(CollisionHelper sender, GameObject gameObject, Vector3 point)
     {
         // if (sender.name == "Rock" && gameObject.name != "Rock" && !gameObject.name.StartsWith("Rock") && !gameObject.name.StartsWith("Cube"))
         // {

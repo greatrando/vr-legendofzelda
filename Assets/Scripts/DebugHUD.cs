@@ -217,6 +217,7 @@ public class DebugHUD : MonoBehaviour
 
         GameObject gameObject = CreateTextObject(toastMessage);
         _toastMessages.Add(gameObject);  
+        UnityEngine.Debug.Log(toastMessage);
 
         try { StartCoroutine(showToastCOR(gameObject, fadeInDuration, displayDuration, fadeOutDuration)); } catch (Exception) { }
     }
@@ -273,7 +274,7 @@ public class DebugHUD : MonoBehaviour
     {
         Text textObject = gameObject.GetComponent<Text>();
 
-        Color orginalColor = new Color(255, 255, 255, 255);
+        Color orginalColor = new Color(0, 0, 255, 255);
 
         //Fade in
         yield return fadeToastInAndOut(textObject, true, fadeInDuration);

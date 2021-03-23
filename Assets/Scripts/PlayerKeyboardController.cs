@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.XR;
 
 public class PlayerKeyboardController : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class PlayerKeyboardController : MonoBehaviour
 
     public GameObject MainCamera;
     public GameObject GroundCollider;
-    // public CharacterController controller;
+    public CharacterController controller;
 
     public float Speed = 12f;
     public float MouseSensitivity = 100f;
@@ -16,10 +17,11 @@ public class PlayerKeyboardController : MonoBehaviour
     public float GroundDistance = 0.4f;
     public float JumpHeight = 3f;
 
+    private InputDevice _rightController;
     private GameObject _capsule;
     private float xRotation = 0f;
     private Vector3 velocity;
-    private bool isGrounded;
+    private float _groundPointY;
     private bool shouldDie = false;
     private int _dieFrames = 0;
     private GameObject _pickupHammer;
@@ -29,8 +31,14 @@ public class PlayerKeyboardController : MonoBehaviour
     void Start()
     {
         if (!ENABLED) return;
-isGrounded = true;
         _capsule = this.transform.FindChildRecursive("Capsule").gameObject;
+
+        if (!Application.isEditor)
+        {
+            var inputDevices = new List<UnityEngine.XR.InputDevice>();
+            UnityEngine.XR.InputDevices.GetDevices(inputDevices);
+            _rightController = inputDevices[2];
+        }
     }
 
 
@@ -46,38 +54,9 @@ isGrounded = true;
 
     private void UpdateGravity()
     {
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
+        Vector3 velocity = new Vector3(0, Gravity, 0);
 
-        if (isGrounded)
-        {
-            bool shouldJump = Input.GetButtonDown("Jump") || Input.GetMouseButtonDown(1);
-            if (shouldJump)
-            {
-                velocity.y = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-            }
-        }
-
-        velocity.y += (Gravity * Time.deltaTime);
-
-        this.transform.position += (velocity * Time.deltaTime);
-        // controller.Move(velocity * Time.deltaTime);
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        isGrounded = true;
-        UnityEngine.Debug.Log("Grounded.");
-    }
-
-
-    private void OnCollisionExit(Collision collision)
-    {
-        isGrounded = false;
-        UnityEngine.Debug.Log("NOT grounded.");
+        controller.Move(velocity * Time.deltaTime);
     }
 
 
@@ -88,22 +67,53 @@ isGrounded = true;
 
         Vector3 move = (transform.right * x + transform.forward * z) * Speed * Time.deltaTime;
 
-        this.transform.position += move;
-        // controller.Move(move);
+        move = this.transform.TransformDirection(move);
+
+        //so in VR, two rotations, one for camera looking around, another for the controller rotating the camera
+        //we need to account for both
+        float camY = MainCamera.transform.rotation.eulerAngles.y;
+        float rigY = this.transform.rotation.eulerAngles.y;
+        float newY = rigY - (camY - rigY); //find difference between rig and camera rotation
+
+        move = Quaternion.Euler(0, -newY, 0) * move;
+        controller.Move(move);
     }
 
 
     private void UpdateCamera()
     {
-        float mouseX = Input.GetAxis("Mouse X") * MouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * MouseSensitivity * Time.deltaTime;
+        if (Application.isEditor)
+        {
+            float mouseX = Input.GetAxis("Mouse X") * MouseSensitivity * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * MouseSensitivity * Time.deltaTime;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        MainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            MainCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            transform.Rotate(Vector3.up * mouseX);
+        }
+        else
+        {
+            float rotateInfluence = 60f;
+
+            Vector3 euler = transform.rotation.eulerAngles;
+
+            Vector2 axis2D;
+            _rightController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D);
+
+            euler.y += axis2D.x * Time.deltaTime *rotateInfluence;
+            transform.rotation = Quaternion.Euler(euler);
+        }
         
-        transform.Rotate(Vector3.up * mouseX);
+        // else
+        // {
+        //     Vector3 cameraAngles = MainCamera.transform.localEulerAngles;
+        //     Vector3 newAngles = new Vector3(0, cameraAngles.y, 0);
+        //     cameraAngles.y = 0;
+        //     this.transform.localEulerAngles = newAngles;
+        //     MainCamera.transform.localEulerAngles = cameraAngles;
+        // }
     }
 
 

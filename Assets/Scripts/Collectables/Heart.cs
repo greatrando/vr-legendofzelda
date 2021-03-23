@@ -8,7 +8,7 @@ public class Heart : MonoBehaviour
 
     public void OnTriggerEnter(Collider collider)
     {
-        if (collider.gameObject.IsChildOf("OVRPlayerController"))
+        if (collider.gameObject.IsChildOf("XR Rig"))
         {
             Destroy(this.gameObject);
             Player.GetInstance().HealthSystem.Health += 1;

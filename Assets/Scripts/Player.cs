@@ -18,20 +18,16 @@ public class Player : MonoBehaviour
     public Texture HeartNoneTexture;
 
 
+    private GameObject XRRig;
     private List<RawImage> _hearts;
     private Wallet _wallet;
     private Text _rupieValue;
+    private bool _isLoaded = false;
 
 
     void Start()
     {
         _player = this;
-        // if (Application.isEditor)
-        // {
-        //     Vector3 pos = this.transform.position;
-        //     pos.y = 20f;
-        //     this.transform.position = pos;
-        // }
 
         HealthSystem = this.GetComponent<HealthSystem>();
         if (HealthSystem == null)
@@ -62,16 +58,45 @@ public class Player : MonoBehaviour
     }
 
 
+    public void OnEnable()
+    {
+        XRRig = GameObject.Find("XR Rig");
+    }
+
+
     public void Update()
     {
-        // Vector3 angles = Camera.transform.eulerAngles;
-        // angles.x = 0;
-        // this.transform.eulerAngles = angles;
-        // Quaternion rotation = this.transform.rotation;
+        if (!_isLoaded)
+        {
+            if (Application.isEditor)
+            {
+                Vector3 newCameraPosition = Camera.transform.position;
+                newCameraPosition.y = 1.5f;
+                Camera.transform.position = newCameraPosition;
+            }
+            _isLoaded = true;
+        }
 
-        // Vector3 position = Camera.transform.position + (rotation * new Vector3(0, -.43f, -0.73f));
-        // this.transform.position = position;
-        // DebugHUD.GetInstance().PresentToast(Camera.transform.eulerAngles.ToString());
+        // DebugHUD.GetInstance().PresentToast("From: " + this.transform.eulerAngles + " :: " + Camera.transform.eulerAngles);
+        Vector3 rigRotation = this.transform.parent.localEulerAngles;
+        rigRotation.x = -Camera.transform.eulerAngles.x;
+        rigRotation.y = 0; //Camera.transform.eulerAngles.y;
+        this.transform.parent.localEulerAngles = rigRotation;
+        // DebugHUD.GetInstance().PresentToast("To: " + this.transform.eulerAngles);
+
+        Vector3 positionCamera = Camera.transform.position;
+        Vector3 positionXR = XRRig.transform.position;
+        Vector3 positionCapsule = this.transform.localPosition;
+        float newPosition = -0.5f;
+        float currentPositon = positionCapsule.y;
+        if (currentPositon != newPosition)
+        {
+            // DebugHUD.GetInstance().PresentToast(positionCamera.y.ToString() + " to " + positionXR.y.ToString() + " from " + currentPositon.ToString() + " Set height to: " + newPosition.ToString(), 0.5f, 10, 0.5f);
+            positionCapsule.y = newPosition;
+            this.transform.localPosition = positionCapsule;
+        }
+       
+        // this.transform.localPosition = new Vector3(-0.25f, this.transform.localPosition.y, 0);
     }
 
 
@@ -88,8 +113,6 @@ public class Player : MonoBehaviour
     {
         UnityEngine.Debug.Log("Quit");
         #if UNITY_EDITOR
-            // Application.Quit() does not work in the editor so
-            // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
             UnityEditor.EditorApplication.isPlaying = false;
         #else
             Application.Quit();
