@@ -11,9 +11,10 @@ public class RoomController : MonoBehaviour
     private const string PLAYER_GAMEOBJECT_NAME = "XR Rig";
 
 
-    public GameObject Activating;
+    public GameObject Spawning;
 
 
+    private List<GameObject> _spawnable = new List<GameObject>();
     private List<GameObject> _activatable = new List<GameObject>();
     private List<GameObject> _activated = new List<GameObject>();
     private bool _inRoom = false;
@@ -21,6 +22,11 @@ public class RoomController : MonoBehaviour
 
     public void Start()
     {
+        foreach (GameObject go in this.gameObject.GetAllChildren().Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("spawnable")))
+        {
+            go.SetActive(false);
+            _spawnable.Add(go);
+        }
         foreach (GameObject go in this.gameObject.GetAllChildren().Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("activatable")))
         {
             go.SetActive(false);
@@ -42,23 +48,31 @@ public class RoomController : MonoBehaviour
 
         _inRoom = true;
 
-        StartCoroutine("SpawnActivatables");
+        StartCoroutine("SpawnAndAtivate");
     }
 
 
-    IEnumerator SpawnActivatables()
+    IEnumerator SpawnAndAtivate()
     {
         List<GameObject> activators = new List<GameObject>();
 
         foreach (GameObject go in _activatable)
         {
+            go.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        foreach (GameObject go in _spawnable)
+        {
             GameObject clone;
             
-            if (Activating != null)
+            if (Spawning != null)
             {
-                clone = Instantiate(Activating, go.transform.position, go.transform.rotation);
+                UnityEngine.Debug.Log("Spawning -- remove");
+                clone = Instantiate(Spawning, go.transform.position, go.transform.rotation);
                 clone.transform.SetParent(this.transform);
-                clone.transform.localScale = go.transform.localScale;
+                // clone.transform.localScale = go.transform.localScale;
                 clone.SetActive(true);
                 activators.Add(clone);
             }
@@ -71,7 +85,7 @@ public class RoomController : MonoBehaviour
             _activated.Add(clone);
         }
 
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(1);
 
 
         foreach (GameObject go in activators)
@@ -97,6 +111,11 @@ public class RoomController : MonoBehaviour
         // DebugHUD.FindDebugHud().PresentToast("out of room " + collider.gameObject.name);
 
         _inRoom = false;
+
+        foreach (GameObject go in _activatable)
+        {
+            go.SetActive(false);
+        }
 
         foreach (GameObject go in _activated)
         {
