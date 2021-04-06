@@ -16,11 +16,28 @@ public static class ClassExtension
 
     public static List<GameObject> GetAllChildren(this GameObject gameObject)
     {
+        return GetAllChildren(gameObject, false);
+    }
+
+
+    public static List<GameObject> GetAllChildren(this GameObject gameObject, bool includeDescendants)
+    {
         List<GameObject> results = new List<GameObject>();
 
         for (int idx = 0; idx < gameObject.transform.childCount; idx++)
         {
-            results.Add(gameObject.transform.GetChild(idx).gameObject);
+            GameObject go = gameObject.transform.GetChild(idx).gameObject;
+            if (go.HasComponent<Tags>())
+            {
+                if (go.GetComponent<Tags>().HasTag("room")) continue;
+            }
+
+            results.Add(go);
+
+            if (includeDescendants)
+            {
+                results.AddRange(GetAllChildren(go, includeDescendants));
+            }
         }
 
         return results;

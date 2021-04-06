@@ -55,6 +55,7 @@ public class Player : MonoBehaviour
 
         _wallet = this.GetComponent<Wallet>();
         _wallet.OnChanged += OnWalletChanged;
+        OnWalletChanged();
     }
 
 
@@ -100,6 +101,15 @@ public class Player : MonoBehaviour
     }
 
 
+    public Wallet Wallet
+    {
+        get
+        {
+            return _wallet;
+        }
+    }
+
+
     private void OnHealthChanged()
     {
         UnityEngine.Debug.Log("Health Changed: " + HealthSystem.Health.ToString());
@@ -122,6 +132,7 @@ public class Player : MonoBehaviour
 
     private void OnWalletChanged()
     {
+        DebugHUD.GetInstance().PresentToast("set value: " + _wallet.CurrentValue.ToString());
         _rupieValue.text = _wallet.CurrentValue.ToString();
     }
 

@@ -22,14 +22,20 @@ public class RoomController : MonoBehaviour
 
     public void Start()
     {
-        foreach (GameObject go in this.gameObject.GetAllChildren().Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("spawnable")))
+        foreach (GameObject go in this.gameObject.GetAllChildren(true).Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("spawnable")))
         {
-            go.SetActive(false);
+            // if (go.activeInHierarchy)
+            {
+                go.SetActive(false);
+            }
             _spawnable.Add(go);
         }
-        foreach (GameObject go in this.gameObject.GetAllChildren().Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("activatable")))
+        foreach (GameObject go in this.gameObject.GetAllChildren(true).Where(go => go.GetComponent<Tags>() != null && go.GetComponent<Tags>().HasTag("activatable")))
         {
-            go.SetActive(false);
+            // if (go.activeInHierarchy)
+            {
+                go.SetActive(false);
+            }
             _activatable.Add(go);
         }
     }
@@ -48,17 +54,20 @@ public class RoomController : MonoBehaviour
 
         _inRoom = true;
 
-        StartCoroutine("SpawnAndAtivate");
+        StartCoroutine("SpawnAndActivate");
     }
 
 
-    IEnumerator SpawnAndAtivate()
+    IEnumerator SpawnAndActivate()
     {
         List<GameObject> activators = new List<GameObject>();
 
         foreach (GameObject go in _activatable)
         {
-            go.SetActive(true);
+            if (!go.activeInHierarchy)
+            {
+                go.SetActive(true);
+            }
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -69,7 +78,6 @@ public class RoomController : MonoBehaviour
             
             if (Spawning != null)
             {
-                UnityEngine.Debug.Log("Spawning -- remove");
                 clone = Instantiate(Spawning, go.transform.position, go.transform.rotation);
                 clone.transform.SetParent(this.transform);
                 // clone.transform.localScale = go.transform.localScale;
@@ -98,7 +106,7 @@ public class RoomController : MonoBehaviour
 
     public void OnTriggerExit(Collider collider)
     {
-        if (!_inRoom) return;
+        if (!_inRoom || !collider.gameObject.IsChildOf(PLAYER_GAMEOBJECT_NAME)) return;
 
         if (collider.gameObject.name.StartsWith("GrabVolume")) return; //not sure why this is firing horribly when in VR
 
@@ -114,7 +122,10 @@ public class RoomController : MonoBehaviour
 
         foreach (GameObject go in _activatable)
         {
-            go.SetActive(false);
+            if (go.activeInHierarchy)
+            {
+                go.SetActive(false);
+            }
         }
 
         foreach (GameObject go in _activated)
