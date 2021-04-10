@@ -27,12 +27,12 @@ public class Equippable : MonoBehaviour
     public bool IsBaggable = true;
     public bool Droppable = false;
 
-    public bool StowedVisible;
+    public bool StowedVisible = true;
     public Vector3 StowedLocation = Vector3.zero;
     public Vector3 StowedRotation = Vector3.zero;
     public Vector3 StowedScale = Vector3.one;
 
-    public bool EquippedVisible;
+    public bool EquippedVisible = true;
     public Vector3 EquippedLocation = Vector3.zero;
     public Vector3 EquippedRotation = Vector3.zero;
     public Vector3 EquippedScale = Vector3.one;

@@ -76,6 +76,7 @@ public class Player : MonoBehaviour
                 Camera.transform.position = newCameraPosition;
             }
             _isLoaded = true;
+            OnWalletChanged();
         }
 
         // DebugHUD.GetInstance().PresentToast("From: " + this.transform.eulerAngles + " :: " + Camera.transform.eulerAngles);
@@ -132,7 +133,7 @@ public class Player : MonoBehaviour
 
     private void OnWalletChanged()
     {
-        DebugHUD.GetInstance().PresentToast("set value: " + _wallet.CurrentValue.ToString());
+        // DebugHUD.GetInstance().PresentToast("set value: " + _wallet.CurrentValue.ToString());
         _rupieValue.text = _wallet.CurrentValue.ToString();
     }
 

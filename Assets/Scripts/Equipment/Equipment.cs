@@ -38,7 +38,7 @@ public class Equipment : MonoBehaviour
     }
 
 
-    public void Acquire(GameObject acquirer, Equippable equippable)
+    public void Acquire(EquipmentMount acquirer, Equippable equippable)
     {
         RemoveFromEquipment(equippable);
 
@@ -50,7 +50,7 @@ public class Equipment : MonoBehaviour
         // try to equip to acquirer
         for (int idx = 0; idx < EquippedMountables.Count; idx++)
         {
-            if (EquippedMountables[idx].gameObject == acquirer)
+            if (EquippedMountables[idx] == acquirer)
             {
                 Equip(equippable, EquippedMountables[idx]);
                 return;
@@ -74,7 +74,7 @@ public class Equipment : MonoBehaviour
             return;
         }
         
-        MoveToBag(equippable);     
+        MoveToBag(equippable);  
     }
 
 
