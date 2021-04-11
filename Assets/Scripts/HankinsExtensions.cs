@@ -10,7 +10,9 @@ public static class ClassExtension
 
     public static bool HasComponent<T>(this GameObject gameObject)
     {
-        return (gameObject.GetComponent<T>() != null);
+        var item = gameObject.GetComponent<T>();
+        bool isNull = (item == null) || (item.Equals(null));
+        return !isNull;
     }
 
 
@@ -36,7 +38,7 @@ public static class ClassExtension
 
             if (includeDescendants)
             {
-                results.AddRange(GetAllChildren(go, includeDescendants));
+                results.AddRange(go.GetAllChildren(includeDescendants));
             }
         }
 

@@ -75,8 +75,8 @@ public class Player : MonoBehaviour
                 newCameraPosition.y = 1.5f;
                 Camera.transform.position = newCameraPosition;
             }
-            _isLoaded = true;
             OnWalletChanged();
+            _isLoaded = true;
         }
 
         // DebugHUD.GetInstance().PresentToast("From: " + this.transform.eulerAngles + " :: " + Camera.transform.eulerAngles);
