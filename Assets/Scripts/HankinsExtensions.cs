@@ -46,6 +46,38 @@ public static class ClassExtension
     }
 
 
+    public static bool IsChildOfTag(this GameObject thisGameObject, List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (thisGameObject.IsChildOfTag(tag)) return true;
+        }
+
+        return false;
+    }
+
+
+    public static bool IsChildOfTag(this GameObject thisGameObject, string tag)
+    {
+        if (thisGameObject.HasComponent<Tags>() && thisGameObject.GetComponent<Tags>().HasTag(tag)) return true;
+
+        if (thisGameObject.transform.parent == null) return false;
+
+        return thisGameObject.transform.parent.gameObject.IsChildOfTag(tag);
+    }
+
+
+    public static bool IsChildOf(this GameObject thisGameObject, List<string> names)
+    {
+        foreach (string name in names)
+        {
+            if (thisGameObject.IsChildOf(name)) return true;
+        }
+
+        return false;
+    }
+
+
     public static bool IsChildOf(this GameObject thisGameObject, string name)
     {
         if (thisGameObject.name == name) return true;

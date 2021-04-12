@@ -11,6 +11,8 @@ public class CollisionHelper : MonoBehaviour
 
 
     public List<GameObject> IgnoreObjects { get; set; }
+    public List<string> IgnoreNames { get; set; }
+    public List<string> IgnoreTags { get; set; }
     public List<GameObject> CurrentCollisions { get; private set; }
 
 
@@ -21,6 +23,8 @@ public class CollisionHelper : MonoBehaviour
     public CollisionHelper()
     {
         IgnoreObjects = new List<GameObject>();
+        IgnoreNames = new List<string>();
+        IgnoreTags = new List<string>();
         CurrentCollisions = new List<GameObject>();
     }
 
@@ -32,7 +36,13 @@ public class CollisionHelper : MonoBehaviour
      
     void OnCollisionEnter(Collision col) 
     {
-        if (col.gameObject == null || IgnoreObjects.Contains(col.gameObject)) return;
+        if (
+                col.gameObject == null || IgnoreObjects.Contains(col.gameObject) || 
+                col.gameObject.IsChildOf(IgnoreNames) || col.gameObject.IsChildOfTag(IgnoreTags)
+            ) 
+        {
+            return;
+        }
 
         CurrentCollisions.Add(col.gameObject);
         OnEnter?.Invoke(this, col.gameObject, col.contacts[0].point);

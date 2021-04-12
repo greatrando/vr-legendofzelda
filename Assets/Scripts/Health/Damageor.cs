@@ -18,6 +18,8 @@ public class Damageor : MonoBehaviour
 
     private CollisionHelper _collisionHelper;
     public List<GameObject> _ignoreObjects = new List<GameObject>();
+    public List<string> _ignoreNames = new List<string>();
+    public List<string> _ignoreTags = new List<string>();
 
 
     void Start()
@@ -29,22 +31,14 @@ public class Damageor : MonoBehaviour
         }
 
         _collisionHelper.IgnoreObjects = _ignoreObjects;
+        _collisionHelper.IgnoreNames = _ignoreNames;
+        _collisionHelper.IgnoreTags = _ignoreTags;
         _collisionHelper.OnEnter += OnDamageCollision;
     }
 
 
     private void OnDamageCollision(CollisionHelper sender, GameObject gameObject, Vector3 point)
     {
-        // if (sender.name == "Rock" && gameObject.name != "Rock" && !gameObject.name.StartsWith("Rock") && !gameObject.name.StartsWith("Cube"))
-        // {
-        //     DebugHUD.FindDebugHud().PresentToast("Damage from " + sender.gameObject.name + " to " + gameObject.name);
-        // }
-        // if (this.gameObject.name == "Handle")
-        // {
-            // UnityEngine.Debug.Log("Collide with: " + gameObject.name);
-        // }
-
-
         Damageee takeDamage = gameObject.GetComponent<Damageee>();
         if (takeDamage != null)
         {

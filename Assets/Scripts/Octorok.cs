@@ -316,7 +316,16 @@ public class Octorok : MonoBehaviour
         if (tags != null && tags.HasTag("environment"))
         {
             ForceChangePositionDestination();
-            return;
+        }
+    }
+
+     
+    void OnTriggerEnter(Collider col) 
+    {
+        Tags tags = col.gameObject.GetComponent<Tags>();
+        if (tags != null && tags.HasTag("environment"))
+        {
+            ForceChangePositionDestination();
         }
     }
 

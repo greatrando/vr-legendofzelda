@@ -80,7 +80,6 @@ public class RoomController : MonoBehaviour
             {
                 clone = Instantiate(Spawning, go.transform.position, go.transform.rotation);
                 clone.transform.SetParent(this.transform);
-                // clone.transform.localScale = go.transform.localScale;
                 clone.SetActive(true);
                 activators.Add(clone);
             }
