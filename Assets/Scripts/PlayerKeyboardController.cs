@@ -65,7 +65,7 @@ public class PlayerKeyboardController : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = (transform.right * x + transform.forward * z) * Speed * Time.deltaTime;
+        Vector3 move = ((transform.right * x * 0.5f) + transform.forward * z) * Speed * Time.deltaTime;
 
         move = this.transform.TransformDirection(move);
 

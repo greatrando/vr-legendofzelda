@@ -8,16 +8,22 @@ public class HealthSystem : MonoBehaviour
 
 
     public GameObject ParentObject = null;
+    public float MaxHealth;
+    public AudioSource DamageAudioSource = null;
+    public AudioSource DieAudioSource = null;
     public List<string> IgnoreDamagees = new List<string>();
 
 
     public delegate void DeathEvent();
     public delegate void HealthChangedEvent();
+    public delegate void TakingDamage();
+    public delegate void Healing();
 
 
-    public float MaxHealth { get; set; }
     public DeathEvent OnDeath = null;
     public HealthChangedEvent OnHealthChanged = null;
+    public TakingDamage OnTakingDamage = null;
+    public Healing OnHealing = null;
 
 
     private float _health = 0;
@@ -57,6 +63,11 @@ public class HealthSystem : MonoBehaviour
             Damageor damageor = gameObject.GetComponent<Damageor>();
             if (damageor != null)
             {
+                if (DamageAudioSource != null)
+                {
+                    DamageAudioSource.Play();
+                }
+                OnTakingDamage?.Invoke();
                 Health -= damageor.DamageAmount;
                 KnockBack(damageor);
             }
@@ -92,12 +103,20 @@ public class HealthSystem : MonoBehaviour
             value = (float)System.Math.Round(value, 1);
             value = Mathf.Min(value, MaxHealth);
 
+            bool healing = (value > _health);
+
             _health = value;
+
+            if (healing)
+            {
+                OnHealing?.Invoke();
+            }
 
             this.OnHealthChanged?.Invoke();
 
             if (_health <= 0)
             {
+                Player.GetInstance().PlayAudio(DieAudioSource);
                 this.OnDeath?.Invoke();
             }
         }

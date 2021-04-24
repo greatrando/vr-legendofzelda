@@ -9,6 +9,7 @@ public class Buyable : MonoBehaviour
 
 
     public int Cost = 0;
+    public AudioSource PurchasedAudio = null;
 
 
     private bool _purchased = false;
@@ -25,6 +26,11 @@ public class Buyable : MonoBehaviour
         {
             _purchased = true;
             player.Wallet.CurrentValue -= Cost;
+
+            if (PurchasedAudio != null)
+            {
+                player.PlayAudio(PurchasedAudio);
+            }
 
             Destroy(this.gameObject);
         }

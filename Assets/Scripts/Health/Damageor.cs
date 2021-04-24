@@ -40,10 +40,9 @@ public class Damageor : MonoBehaviour
     private void OnDamageCollision(CollisionHelper sender, GameObject gameObject, Vector3 point)
     {
         Damageee takeDamage = gameObject.GetComponent<Damageee>();
-        if (takeDamage != null)
-        {
-            takeDamage.OnApplyDamage?.Invoke(sender.gameObject);
-        }
+        if (takeDamage == null) return; 
+
+        takeDamage.OnApplyDamage?.Invoke(sender.gameObject);
 
         if (sender.gameObject == null) return;
         

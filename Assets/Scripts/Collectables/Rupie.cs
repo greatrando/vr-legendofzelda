@@ -13,8 +13,9 @@ public class Rupie : MonoBehaviour
     {
         if (collider.gameObject.IsChildOf("XR Rig"))
         {
-            Player.GetInstance().GetComponent<Wallet>().CurrentValue += Value;
+            Player.GetInstance().PlayAudio(this.GetComponent<AudioSource>(), Value);
             Destroy(this.gameObject);
+            Player.GetInstance().GetComponent<Wallet>().CurrentValue += Value;
         }
     }
 

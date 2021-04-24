@@ -104,4 +104,35 @@ public static class ClassExtension
     }
 
 
+    public static GameObject FindParent(this GameObject thisGameObject, string name)
+    {
+        if (thisGameObject.name == name) return thisGameObject;
+
+        if (thisGameObject.transform.parent == null) return null;
+
+        return thisGameObject.transform.parent.gameObject.FindParent(name);
+    }
+
+
+    public static Rect BoardBounds(this Bounds bounds)
+    {
+        float halfX = bounds.size.x / 2.0f;
+        float halfZ = bounds.size.z / 2.0f;
+
+        Rect result = new Rect()
+        {
+            // xMin = bounds.center.x - halfX,
+            // xMax = bounds.center.x + halfX,
+            // yMin = bounds.center.z - halfZ,
+            // yMax = bounds.center.z + halfZ
+            xMin = -halfX,
+            xMax = halfX,
+            yMin = -halfZ,
+            yMax = halfZ            
+        };
+
+        return result;
+    }
+
+
 }

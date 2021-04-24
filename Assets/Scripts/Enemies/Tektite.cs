@@ -9,11 +9,11 @@ public class Tektite : MonoBehaviour
 
 
     public Material Material;
-    public float MaxHealth = 0.5f;
+    [Range(0f, 1f)]public float PercentJump = 0.5f;
 
 
     private const float MIN_JUMP_SPEED = 1f;
-    private const float MAX_JUMP_SPEED = 5f;
+    private const float MAX_JUMP_SPEED = 5f * 2;
     private const float JUMP_ANGLE_TIME = 0.125f;
     private const float COAST_ANGLE_TIME = 1.0f;
     private const float RESET_ANGLE_TIME = 0.5f;
@@ -28,6 +28,8 @@ public class Tektite : MonoBehaviour
     }
 
 
+    private GameObject _room;
+    private Rect _roomBounds;
     private Dictionary<GameObject, Vector3> _hips = new Dictionary<GameObject, Vector3>();
     private Dictionary<GameObject, Vector3> _knees = new Dictionary<GameObject, Vector3>();
     private Vector3 _lastPosition;
@@ -42,6 +44,9 @@ public class Tektite : MonoBehaviour
 
     void Start()
     {
+        _room = this.gameObject.FindParent("Room");
+        _roomBounds = _room.GetComponent<BoxCollider>().bounds.BoardBounds();
+
         SetupMaterial();
         SetupLegs();
         SetupHealth();
@@ -87,13 +92,6 @@ public class Tektite : MonoBehaviour
     private void SetupHealth()
     {
         HealthSystem healthSystem = this.GetComponent<HealthSystem>();
-        if (healthSystem == null)
-        {
-            healthSystem = this.gameObject.AddComponent<HealthSystem>();
-        }
-        healthSystem.IgnoreDamagees.AddRange(new string[] { "Tektite" });
-        healthSystem.MaxHealth = MaxHealth;
-        healthSystem.Health = MaxHealth;
         healthSystem.OnHealthChanged += OnHealthChanged;
         healthSystem.OnDeath += OnDeath;        
     }
@@ -109,17 +107,15 @@ public class Tektite : MonoBehaviour
         }
         else
         {
-            MOTION_STATE rand = (MOTION_STATE)Random.Range(1, 3);
-            switch (rand)
+            float rand = Random.Range(0f, 1f);
+            if (rand <= PercentJump)
             {
-                case MOTION_STATE.JUMP:
-                    ApplyJumpState();
-                    break;
-                case MOTION_STATE.BOUNCE:
-                    ApplyBouncState();
-                    break;
+                ApplyJumpState();
             }
-
+            else
+            {
+                ApplyBouncState();
+            }
         }
     }
 
@@ -199,10 +195,38 @@ public class Tektite : MonoBehaviour
             go.transform.localEulerAngles = new Vector3(Mathf.LerpAngle(_knees[go].x, _kneeTargetX, _stateTime / _bendTime), 0, 0);
         }
 
+        KeepInRoom();
+
         if (_stateTime >= _motionTime)
         {
             ChangePositionDestination();
         }
+    }
+
+
+    private void KeepInRoom()
+    {
+        Vector3 localPosition = this.transform.localPosition;
+        UnityEngine.Debug.Log("Bounds: " + _roomBounds);
+        UnityEngine.Debug.Log("Position: " + localPosition);
+        if (localPosition.x < _roomBounds.xMin)
+        {
+            localPosition.x += 0.1f;
+        }
+        else if (localPosition.x > _roomBounds.xMax)
+        {
+            localPosition.x -= 0.1f;
+        }
+        if (localPosition.z < _roomBounds.yMin)
+        {
+            localPosition.z += 0.1f;
+        }
+        else if (localPosition.z > _roomBounds.yMax)
+        {
+            localPosition.z -= 0.1f;
+        }
+
+        this.transform.localPosition = localPosition;
     }
 
 

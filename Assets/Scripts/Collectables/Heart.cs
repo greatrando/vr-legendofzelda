@@ -10,6 +10,7 @@ public class Heart : MonoBehaviour
     {
         if (collider.gameObject.IsChildOf("XR Rig"))
         {
+            Player.GetInstance().PlayAudio(this.GetComponent<AudioSource>());
             Destroy(this.gameObject);
             Player.GetInstance().HealthSystem.Health += 1;
         }

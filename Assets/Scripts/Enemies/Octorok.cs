@@ -13,7 +13,6 @@ public class Octorok : MonoBehaviour
     public float WalkSpeed = 1;
     public float FireSeconds = 2.0f;
     public float FireSpeed = 10f;
-    public float MaxHealth = 0.5f;
 
 
     private const float WALK_LERP_TIME = 2f;
@@ -101,10 +100,8 @@ public class Octorok : MonoBehaviour
         if (healthSystem == null)
         {
             healthSystem = this.gameObject.AddComponent<HealthSystem>();
+            healthSystem.IgnoreDamagees.AddRange(new string[] { "Rock", "Octorok", "Nose" });
         }
-        healthSystem.IgnoreDamagees.AddRange(new string[] { "Rock", "Octorok", "Nose" });
-        healthSystem.MaxHealth = MaxHealth;
-        healthSystem.Health = MaxHealth;
         healthSystem.OnHealthChanged += OnHealthChanged;
         healthSystem.OnDeath += OnDeath;
 

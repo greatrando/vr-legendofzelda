@@ -16,13 +16,16 @@ public class Player : MonoBehaviour
     public Texture HeartFullTexture;
     public Texture HeartHalfTexture;
     public Texture HeartNoneTexture;
+    public AudioSource DieAudio = null;
 
 
     private GameObject XRRig;
     private List<RawImage> _hearts;
     private Wallet _wallet;
     private Text _rupieValue;
+    private Haptics _haptics;
     private bool _isLoaded = false;
+    private bool _isDead = false;
 
 
     void Start()
@@ -50,12 +53,15 @@ public class Player : MonoBehaviour
 
         HealthSystem.MaxHealth = 3; // 3 hearts
         HealthSystem.OnHealthChanged += OnHealthChanged;
+        HealthSystem.OnTakingDamage += OnTakingDamage;
         HealthSystem.OnDeath += OnDeath;
         HealthSystem.Health = HealthSystem.MaxHealth;
 
         _wallet = this.GetComponent<Wallet>();
         _wallet.OnChanged += OnWalletChanged;
         OnWalletChanged();
+
+        _haptics = this.GetComponent<Haptics>();
     }
 
 
@@ -77,6 +83,18 @@ public class Player : MonoBehaviour
             }
             OnWalletChanged();
             _isLoaded = true;
+        }
+
+        if (_isDead)
+        {
+            _isDead = false;
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0, UnityEngine.SceneManagement.LoadSceneMode.Single);
+            // #if UNITY_EDITOR
+            //     UnityEditor.EditorApplication.isPlaying = false;
+            // #else
+            //     Application.Quit();
+            // #endif
+            return;
         }
 
         // DebugHUD.GetInstance().PresentToast("From: " + this.transform.eulerAngles + " :: " + Camera.transform.eulerAngles);
@@ -102,6 +120,42 @@ public class Player : MonoBehaviour
     }
 
 
+    public void PlayAudio(AudioSource audioSource)
+    {
+        PlayAudio(audioSource, 1);
+    }
+
+
+    public void PlayAudio(AudioSource audioSource, int count)
+    {
+        if (audioSource == null) return;
+
+        AudioClip clip = audioSource.clip;
+        try { StartCoroutine(PlayAudioLoops(clip, count)); } catch (System.Exception) { }
+    }
+
+
+    private IEnumerator PlayAudioLoops(AudioClip clip, int count)
+    {
+        yield return null;
+
+        float repeatDelayTime = clip.length;
+        if (count > 1)
+        {
+            repeatDelayTime = 0.05f;
+        }
+
+        for (int index = 0; index < count; index++)
+        {
+            AudioSource.PlayClipAtPoint(clip, this.gameObject.transform.position, 1.0f);
+
+            yield return new WaitForSeconds(repeatDelayTime);
+        }
+
+        yield return null;
+    }
+
+
     public Wallet Wallet
     {
         get
@@ -120,14 +174,40 @@ public class Player : MonoBehaviour
     }
 
 
+    private void OnTakingDamage()
+    {
+        _haptics.Play(Haptics.HAND.Left, Haptics.VIBRATION_FORCE.Hard, 0.5f);
+        _haptics.Play(Haptics.HAND.Right, Haptics.VIBRATION_FORCE.Hard, 0.5f);
+    }
+
+
     private void OnDeath()
     {
         UnityEngine.Debug.Log("Quit");
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
+
+
+        try { StartCoroutine(StartDeath()); } catch (System.Exception) { }
+    }
+
+
+    private IEnumerator StartDeath()
+    {
+        if (DieAudio != null)
+        {
+            DieAudio.Play();
+        }
+        yield return null;
+
+        float waitTime = 0;
+        while (waitTime < 3)
+        {
+            waitTime += Time.deltaTime;
+            yield return null;
+        }
+
+        _isDead = true;
+
+        yield return null;
     }
 
 
