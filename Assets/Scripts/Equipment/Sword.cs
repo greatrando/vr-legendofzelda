@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Sword : MonoBehaviour
 {
 
@@ -9,6 +10,10 @@ public class Sword : MonoBehaviour
     public void Start()
     {
         Damageor damageor = this.GetComponent<Damageor>();
+        if (damageor == null)
+        {
+            damageor = this.gameObject.AddComponent<Damageor>();
+        }
         damageor.OnDamaging += DamagingEvent;
     }
 

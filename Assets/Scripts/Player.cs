@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     public Texture HeartHalfTexture;
     public Texture HeartNoneTexture;
     public AudioSource DieAudio = null;
+    public bool IsDead { get; private set; } = false;
 
 
     private GameObject XRRig;
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     private Text _rupieValue;
     private Haptics _haptics;
     private bool _isLoaded = false;
-    private bool _isDead = false;
+    private bool _isDieing = false;
 
 
     void Start()
@@ -85,15 +86,10 @@ public class Player : MonoBehaviour
             _isLoaded = true;
         }
 
-        if (_isDead)
+        if (IsDead)
         {
-            _isDead = false;
-            UnityEngine.SceneManagement.SceneManager.LoadScene(0, UnityEngine.SceneManagement.LoadSceneMode.Single);
-            // #if UNITY_EDITOR
-            //     UnityEditor.EditorApplication.isPlaying = false;
-            // #else
-            //     Application.Quit();
-            // #endif
+            IsDead = false;
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Title Menu");
             return;
         }
 
@@ -116,7 +112,10 @@ public class Player : MonoBehaviour
             this.transform.localPosition = positionCapsule;
         }
        
-        // this.transform.localPosition = new Vector3(-0.25f, this.transform.localPosition.y, 0);
+        if (!_isDieing && positionCamera.y < -8)
+        {
+            OnDeath();
+        }
     }
 
 
@@ -183,8 +182,7 @@ public class Player : MonoBehaviour
 
     private void OnDeath()
     {
-        UnityEngine.Debug.Log("Quit");
-
+        _isDieing = true;
 
         try { StartCoroutine(StartDeath()); } catch (System.Exception) { }
     }
@@ -205,7 +203,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        _isDead = true;
+        IsDead = true;
 
         yield return null;
     }

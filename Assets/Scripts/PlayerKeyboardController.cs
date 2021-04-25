@@ -46,6 +46,8 @@ public class PlayerKeyboardController : MonoBehaviour
     {
         if (!ENABLED) return;
 
+        if (Player.GetInstance() != null && Player.GetInstance().IsDead) return;
+
         UpdateCamera();
         UpdateMovement();
         UpdateGravity();
@@ -105,15 +107,6 @@ public class PlayerKeyboardController : MonoBehaviour
             euler.y += axis2D.x * Time.deltaTime *rotateInfluence;
             transform.rotation = Quaternion.Euler(euler);
         }
-        
-        // else
-        // {
-        //     Vector3 cameraAngles = MainCamera.transform.localEulerAngles;
-        //     Vector3 newAngles = new Vector3(0, cameraAngles.y, 0);
-        //     cameraAngles.y = 0;
-        //     this.transform.localEulerAngles = newAngles;
-        //     MainCamera.transform.localEulerAngles = cameraAngles;
-        // }
     }
 
 
